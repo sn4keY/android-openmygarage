@@ -11,6 +11,9 @@ interface StoredPlateDao {
     @Query("SELECT * FROM stored_plate_table WHERE plateId = :key")
     fun get(key: Long): StoredPlate?
 
+    @Query("DELETE FROM stored_plate_table")
+    fun clear()
+
     @Insert
     fun insert(storedPlate: StoredPlate)
 
