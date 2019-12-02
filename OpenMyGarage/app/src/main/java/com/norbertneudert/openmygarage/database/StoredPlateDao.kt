@@ -14,7 +14,7 @@ interface StoredPlateDao {
     @Query("DELETE FROM stored_plate_table")
     fun clear()
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(storedPlate: StoredPlate)
 
     @Update

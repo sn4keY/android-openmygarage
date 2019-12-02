@@ -2,19 +2,21 @@ package com.norbertneudert.openmygarage.ui.main.plateTab
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 
 import com.norbertneudert.openmygarage.R
 import com.norbertneudert.openmygarage.database.OMGDatabase
+import com.norbertneudert.openmygarage.database.StoredPlate
 import com.norbertneudert.openmygarage.databinding.PlateTabFragmentBinding
-import com.norbertneudert.openmygarage.ui.main.logTab.LogTabViewModelFactory
 
-class PlateTabFragment : Fragment() {
+class PlateTabFragment : Fragment(), EditPlateFragment.EditPlateDialogListener {
 
     companion object {
         fun newInstance() = PlateTabFragment()
@@ -37,15 +39,25 @@ class PlateTabFragment : Fragment() {
         viewModel.onClear()
         viewModel.onPopulate()
 
-        val adapter = PlateAdapter(viewModel)
+        val adapter = PlateAdapter(viewModel, activity!!.supportFragmentManager, this)
         binding.plateList.adapter = adapter
 
         viewModel.plates.observe(viewLifecycleOwner, Observer {
             it?.let {
-                adapter.data = it
+                adapter.submitList(it)
             }
         })
 
+        binding.fabAdd.setOnClickListener {
+            //Toast.makeText(context, "Add plate", Toast.LENGTH_LONG).show()
+        }
+
         return binding.root
+    }
+
+    override fun onFinishedEditing(storedPlate: StoredPlate) {
+        Log.i("PlateTabFragment", "onFinishedEditing called")
+        Log.i("PlateTabFragment", storedPlate.plateId.toString())
+        viewModel.onEdit(storedPlate)
     }
 }
