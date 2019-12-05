@@ -16,6 +16,10 @@ interface EntryLogDao {
 
     @Query("SELECT * FROM entry_log_table ORDER BY entry_time DESC LIMIT 5")
     fun getEntryLogsLimited() : LiveData<List<EntryLog>>
+
+    @Query("SELECT * FROM entry_log_table WHERE :plate == plate ORDER BY entry_time DESC")
+    fun getEntrLogsFromPlate(plate: String) : LiveData<List<EntryLog>>
+
     @Insert
     fun insert(entryLog: EntryLog)
 
