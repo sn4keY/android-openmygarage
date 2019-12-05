@@ -49,7 +49,9 @@ class PlateTabFragment : Fragment(), EditPlateFragment.EditPlateDialogListener {
         })
 
         binding.fabAdd.setOnClickListener {
-            //Toast.makeText(context, "Add plate", Toast.LENGTH_LONG).show()
+            val editor = EditPlateFragment.newInstance(StoredPlate())
+            editor.setTargetFragment(this,300)
+            editor.show(activity!!.supportFragmentManager, "dialog")
         }
 
         return binding.root
