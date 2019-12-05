@@ -28,7 +28,8 @@ class PlateTabFragment : Fragment(), EditPlateFragment.EditPlateDialogListener {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.plate_tab_fragment, container, false)
 
-        val application = requireNotNull(this.activity).application
+        val activity = requireNotNull(this.activity)
+        val application = activity.application
         val dataSource = OMGDatabase.getInstance(application).storedPlate
         val viewModelFactory = PlateTabViewModelFactory(dataSource, application)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(PlateTabViewModel::class.java)
@@ -36,10 +37,12 @@ class PlateTabFragment : Fragment(), EditPlateFragment.EditPlateDialogListener {
         binding.viewModel = viewModel
         binding.setLifecycleOwner(this)
 
-        viewModel.onClear()
-        viewModel.onPopulate()
+        if(viewModel.plates.value.isNullOrEmpty()) {
+            viewModel.onClear()
+            viewModel.onPopulate()
+        }
 
-        val adapter = PlateAdapter(viewModel, activity!!.supportFragmentManager, this)
+        val adapter = PlateAdapter(viewModel, activity.supportFragmentManager, this)
         binding.plateList.adapter = adapter
 
         viewModel.plates.observe(viewLifecycleOwner, Observer {
@@ -51,7 +54,7 @@ class PlateTabFragment : Fragment(), EditPlateFragment.EditPlateDialogListener {
         binding.fabAdd.setOnClickListener {
             val editor = EditPlateFragment.newInstance(StoredPlate())
             editor.setTargetFragment(this,300)
-            editor.show(activity!!.supportFragmentManager, "dialog")
+            editor.show(activity.supportFragmentManager, "dialog")
         }
 
         return binding.root
